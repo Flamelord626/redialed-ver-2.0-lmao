@@ -28,6 +28,6 @@
 
 
 ### In progress
--
+- update it to latest version of minisrv 
 ### Finished
 -
