@@ -30,6 +30,9 @@ PageBuilderVault/http_pb/*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+#this isnt needed dunno why it wasnt put here -your friendly neighborhood spiderman
+daily_maintenance.sh
+
 # Mono auto generated files
 mono_crash.*
 

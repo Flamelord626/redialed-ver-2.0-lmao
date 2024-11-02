@@ -3,6 +3,7 @@
  * By: zefie
  */
 class WTVDownloadList {
+
     download_list = "";
     service_name = "";
     content_type = "wtv/download-list";
@@ -15,11 +16,11 @@ class WTVDownloadList {
      * @param {string} service_name Service name to use in wtv-urls
      */
     constructor(minisrv_config, service_name = "wtv-disk") {
-        var {WTVShared, clientShowAlert} = require("./WTVShared.js");
+        var { WTVShared, clientShowAlert } = require("./WTVShared.js");
         this.minisrv_config = minisrv_config;
         this.wtvshared = new WTVShared(minisrv_config);
         this.clientShowAlert = clientShowAlert;
-        this.service_name = service_name;
+        this.service_name = service_name
         this.clear();
     }
 
@@ -78,11 +79,10 @@ class WTVDownloadList {
      * @param {string} state Group state
      * @param {boolean|null} service_owned Sets service owned flag. (null = don't set)
      */
-    createGroup(name, path, state = "invalid", service_owned = null) {
+    createGroup(name, path, state = 'invalid', service_owned = null) {
         this.download_list += "CREATE-GROUP " + name + "\n";
         this.download_list += "state: " + state + "\n";
-        if (service_owned !== null)
-            this.download_list += "service-owned: " + service_owned + "\n";
+        if (service_owned !== null) this.download_list += "service-owned: " + service_owned + "\n";
         this.download_list += "base: " + path + "\n\n";
     }
 
@@ -93,7 +93,7 @@ class WTVDownloadList {
      * @param {string} state Group state
      * @param {boolean} service_owned Sets service owned flag.
      */
-    createUpdateGroup(name, path, state = "invalid", service_owned = false) {
+    createUpdateGroup(name, path, state = 'invalid', service_owned = false) {
         this.createGroup(name + "-UPDATE", path, state);
         this.createGroup(name, path, state, service_owned);
     }
@@ -108,7 +108,7 @@ class WTVDownloadList {
         path = this.checkOriginalName(path, original_filename);
         this.download_list += "DELETE " + path + "\n";
         if (group) this.download_list += "group: " + group + "\n\n";
-        else this.download_list += "\n";
+        else (this.download_list) += "\n";
     }
 
     /**
@@ -122,15 +122,12 @@ class WTVDownloadList {
     }
 
     /**
-     * Alias to put() for User Store
-     * @param {string} path Absolute file://Disk/ path of a file to upload to the service
-     * @param {string} destination Destination file path in the User Store
-     */
+    * Alias to put() for User Store
+    * @param {string} path Absolute file://Disk/ path of a file to upload to the service
+    * @param {string} destination Destination file path in the User Store
+    */
     putUserStoreDest(path, destination) {
-        this.put(
-            path,
-            this.service_name + ":/userstore?partialPath=" + escape(destination)
-        );
+        this.put(path, this.service_name + ":/userstore?partialPath=" + escape(destination));
     }
 
     /**
@@ -141,7 +138,6 @@ class WTVDownloadList {
         var destination = path.replace("file://", "");
         this.putUserStoreDest(path, destination);
     }
-
     /**
      * Adds a GET command to the download list
      * @param {string} file Non-absolute path of client destination file (relative to group base)
@@ -153,44 +149,24 @@ class WTVDownloadList {
      * @param {string|null} original_filename Use this filename (useful if WTV GZ)
      * @param {string} file_permission File permissions
      */
-    get(
-        file,
-        path,
-        source,
-        group,
-        checksum = null,
-        uncompressed_size = null,
-        original_filename = null,
-        file_permission = "r"
-    ) {
+    get(file, path, source, group, checksum = null, uncompressed_size = null, original_filename = null, file_permission = 'r') {
         if (original_filename) {
-            file = file.split("/");
+            file = file.split('/');
             var file_name = file[file.length - 1];
             path = path.replace(file_name, original_filename);
             file.pop();
-            if (file.length > 0) file = file.join("/") + "/" + original_filename;
+            if (file.length > 0) file = file.join('/') + '/' + original_filename;
             else file = original_filename;
         }
         this.download_list += "GET " + file + "\n";
 
-        source = source.replace(/\\/g, "/");
+		source = source.replace(/\\/g, "/");
         this.download_list += "group: " + group + "-UPDATE\n";
         this.download_list += "location: " + source + "\n";
         this.download_list += "file-permission: " + file_permission + "\n";
-        if (checksum != null)
-            this.download_list += "wtv-checksum: " + checksum + "\n";
-        if (uncompressed_size != null)
-            this.download_list +=
-                "wtv-uncompressed-filesize: " + uncompressed_size + "\n";
-        this.download_list +=
-            "service-source-location: /webtv/content/" +
-            source.substr(
-                source.indexOf("-") + 1,
-                source.indexOf(":/") - source.indexOf("-") - 1
-            ) +
-            "d/" +
-            source.substr(source.indexOf(":/") + 2) +
-            "\n";
+        if (checksum != null) this.download_list += "wtv-checksum: " + checksum + "\n";
+        if (uncompressed_size != null) this.download_list += "wtv-uncompressed-filesize: " + uncompressed_size + "\n";
+        this.download_list += "service-source-location: /webtv/content/" + source.substr(source.indexOf('-') + 1, source.indexOf(':/') - source.indexOf('-') - 1) + "d/" + source.substr(source.indexOf(':/') + 2) + "\n";        
         this.download_list += "client-dest-location: " + path + "\n\n";
     }
 
@@ -204,12 +180,12 @@ class WTVDownloadList {
         if (original_name) {
             var tmp = this.wtvshared.getFilePath(path);
             if (tmp.length > 0) return tmp + "/" + original_name;
-            return original_name;
+            return original_name
         } else return path;
     }
 
     getGroupDataFromClientPost(post_data) {
-        if (typeof post_data == "string") post_data = post_data.split("\n\n");
+        if (typeof post_data == 'string') post_data = post_data.split("\n\n");
         var group_data = [];
         var i = 0;
         post_data.forEach(function (v) {
@@ -258,10 +234,7 @@ class WTVDownloadList {
         this.download_list += "SET-GROUP " + group + "\n";
         this.download_list += "state: " + state + "\n";
         this.download_list += "version: " + version + "\n";
-        this.download_list +=
-            "last-checkup-time: " +
-            new Date().toUTCString().replace("GMT", "+0000") +
-            "\n\n";
+        this.download_list += "last-checkup-time: " + new Date().toUTCString().replace("GMT", "+0000") + "\n\n";
     }
 
     /**
@@ -282,73 +255,54 @@ class WTVDownloadList {
         this.delete(path + ".GROUP-UPDATE/");
     }
 
-    /**
-     * Generates the Download page
-     * @param {object} minisrv_config minisrv config object
-     * @param {string} title Page title
-     * @param {string} group
-     * @param {string|null} diskmap
-     * @param {string|null} main_message Message displayed in the center of the page
-     * @param {string|null} message Initial progress bar message
-     * @param {boolean|null} force_update Force this update even if the client reports the files are synced
-     * @param {string|null} success_url Where the client goes when the process succeeds
-     * @param {string|null} fail_url  Where the client goes when the process fails.
-     * @param {string|null} url Use your own URL for client:fetch?source= instead of our generated one
-     * @returns {string} HTML Download Page
-     */
-    getSyncPage(
-        title,
-        group,
-        diskmap = null,
-        main_message = null,
-        message = null,
-        force_update = null,
-        dont_delete_files = null,
-        success_url = null,
-        fail_url = null,
-        url = null
-    ) {
+   /**
+    * Generates the Download page
+    * @param {object} minisrv_config minisrv config object
+    * @param {string} title Page title
+    * @param {string} group
+    * @param {string|null} diskmap
+    * @param {string|null} main_message Message displayed in the center of the page
+    * @param {string|null} message Initial progress bar message
+    * @param {boolean|null} force_update Force this update even if the client reports the files are synced
+    * @param {string|null} success_url Where the client goes when the process succeeds
+    * @param {string|null} fail_url  Where the client goes when the process fails.
+    * @param {string|null} url Use your own URL for client:fetch?source= instead of our generated one
+    * @returns {string} HTML Download Page
+    */
+    getSyncPage(title, group, diskmap = null, main_message = null, message = null, force_update = null, dont_delete_files = null, success_url = null, fail_url = null, url = null) {
         // Begin Set defaults
-        if (main_message === null)
-            main_message = "Your Internet terminal is retrieving some files.";
+        if (main_message === null) main_message = "Your receiver is downloading files.";
 
-        if (message === null) message = "Retrieving Files";
+        if (message === null) message = "Retrieving files";
 
         if (force_update === null) force_update = false;
 
-        if (url === null)
-            url = this.service_name + ":/sync?diskmap=" + escape(diskmap);
+        if (url === null) url = this.service_name + ":/sync?diskmap=" + escape(diskmap);
 
         if (force_update) url += "&force=" + force_update;
         if (dont_delete_files) url += "&dont_delete_files=" + dont_delete_files;
 
-        if (success_url === null)
-            success_url = new this.clientShowAlert({
-                image: this.minisrv_config.config.service_logo,
-                message: "Download successful!",
-                buttonlabel1: "Okay",
-                buttonaction1: "client:goback",
-                noback: true,
-            }).getURL();
+        if (success_url === null) success_url = new this.clientShowAlert({
+            'image': this.minisrv_config.config.service_logo,
+            'message': "Download successful!",
+            'buttonlabel1': "Okay",
+            'buttonaction1': "client:goback",
+            'noback': true,
+        }).getURL();
 
-        if (fail_url === null)
-            fail_url = new this.clientShowAlert({
-                image: this.minisrv_config.config.service_logo,
-                message: "Download failed...",
-                buttonlabel1: "Okay",
-                buttonaction1: "client:goback",
-                noback: true,
-            }).getURL();
+        if (fail_url === null) fail_url = new this.clientShowAlert({
+            'image': this.minisrv_config.config.service_logo,
+            'message': "Download failed...",
+            'buttonlabel1': "Okay",
+            'buttonaction1': "client:goback",
+            'noback': true,
+        }).getURL();
         // End set defaults
         return `<html>
 <head>
         <meta
                 http-equiv=refresh
-                    content="0;url=client:Fetch?group=${encodeURIComponent(
-            group
-        )}&source=${encodeURIComponent(
-            url
-        )}&message=${encodeURIComponent(message)}"
+                    content="0;url=client:Fetch?group=${encodeURIComponent(group)}&source=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}"
         >
         <display downloadsuccess="${success_url}" downloadfail="${fail_url}">
         <title>${title}</title>
@@ -357,9 +311,7 @@ class WTVDownloadList {
 <table cellspacing=0 cellpadding=0>
         <tr>
                 <td width=104 height=74 valign=middle align=center bgcolor=3B3A4D>
-                        <img src="${
-            this.minisrv_config.config.service_logo
-        }" width=86 height=64>
+                        <img src="${this.minisrv_config.config.service_logo}" width=86 height=64>
                 <td width=20 valign=top align=left bgcolor=3B3A4D>
                         <spacer>
                 <td colspan=2 width=436 valign=middle align=left bgcolor=3B3A4D>
@@ -380,7 +332,7 @@ class WTVDownloadList {
                 <td>
                         <font size=+1>
                                ${main_message}
-                                <p>This usually takes a while.
+                                <p>This may take a while.
                         </font>
         <tr>
                 <td colspan=2>
@@ -397,8 +349,9 @@ class WTVDownloadList {
 </body>
 </html>
 
-`;
+`
     }
+
 }
 
 module.exports = WTVDownloadList;

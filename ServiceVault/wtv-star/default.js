@@ -27,7 +27,7 @@ data = `<html>
 <td colspan=2 width=184 height=312 valign=top align=left bgcolor=000000>
 <font size="+1">
 <b>
-The WebTV Network is temporarily unavailable.
+The WebTV Redialed Network is temporarily unavailable.
 </b>
 <p>
 Please try connecting later.`;
